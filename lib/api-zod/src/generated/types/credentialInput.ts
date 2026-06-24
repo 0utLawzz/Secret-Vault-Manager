@@ -12,7 +12,11 @@ export interface CredentialInput {
   email: string;
   /** @minLength 1 */
   password: string;
-  /** @nullable */
+  /**
+     * @minimum 0
+     * @maximum 5000
+     * @nullable
+     */
   credit?: number | null;
   status: CredentialInputStatus;
   /** @nullable */

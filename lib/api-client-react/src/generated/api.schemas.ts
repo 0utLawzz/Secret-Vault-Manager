@@ -14,7 +14,6 @@ export type CredentialStatus = typeof CredentialStatus[keyof typeof CredentialSt
 
 export const CredentialStatus = {
   New: 'New',
-  Bank: 'Bank',
   VPending: 'VPending',
   USED: 'USED',
 } as const;
@@ -23,7 +22,11 @@ export interface Credential {
   id: number;
   email: string;
   password: string;
-  /** @nullable */
+  /**
+     * @minimum 0
+     * @maximum 5000
+     * @nullable
+     */
   credit: number | null;
   status: CredentialStatus;
   /** @nullable */
@@ -37,7 +40,6 @@ export type CredentialInputStatus = typeof CredentialInputStatus[keyof typeof Cr
 
 export const CredentialInputStatus = {
   New: 'New',
-  Bank: 'Bank',
   VPending: 'VPending',
   USED: 'USED',
 } as const;
@@ -47,7 +49,11 @@ export interface CredentialInput {
   email: string;
   /** @minLength 1 */
   password: string;
-  /** @nullable */
+  /**
+     * @minimum 0
+     * @maximum 5000
+     * @nullable
+     */
   credit?: number | null;
   status: CredentialInputStatus;
   /** @nullable */
@@ -59,7 +65,6 @@ export type CredentialUpdateStatus = typeof CredentialUpdateStatus[keyof typeof 
 
 export const CredentialUpdateStatus = {
   New: 'New',
-  Bank: 'Bank',
   VPending: 'VPending',
   USED: 'USED',
 } as const;
@@ -69,7 +74,11 @@ export interface CredentialUpdate {
   email?: string;
   /** @minLength 1 */
   password?: string;
-  /** @nullable */
+  /**
+     * @minimum 0
+     * @maximum 5000
+     * @nullable
+     */
   credit?: number | null;
   status?: CredentialUpdateStatus;
   /** @nullable */
@@ -77,7 +86,11 @@ export interface CredentialUpdate {
 }
 
 export interface CreditInput {
-  /** @nullable */
+  /**
+     * @minimum 0
+     * @maximum 5000
+     * @nullable
+     */
   credit: number | null;
 }
 
@@ -86,7 +99,6 @@ export type StatusInputStatus = typeof StatusInputStatus[keyof typeof StatusInpu
 
 export const StatusInputStatus = {
   New: 'New',
-  Bank: 'Bank',
   VPending: 'VPending',
   USED: 'USED',
 } as const;
@@ -97,7 +109,6 @@ export interface StatusInput {
 
 export type CredentialStatsByStatus = {
   New: number;
-  Bank: number;
   VPending: number;
   USED: number;
 };
@@ -120,7 +131,6 @@ export type ListCredentialsStatus = typeof ListCredentialsStatus[keyof typeof Li
 
 export const ListCredentialsStatus = {
   New: 'New',
-  Bank: 'Bank',
   VPending: 'VPending',
   USED: 'USED',
 } as const;

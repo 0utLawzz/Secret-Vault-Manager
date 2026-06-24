@@ -70,8 +70,9 @@ export function CredentialCard({ credential, onEdit }: CredentialCardProps) {
 
   const handleUpdateCredit = (e: React.FormEvent) => {
     e.preventDefault();
-    const val = creditInput.trim() === "" ? null : parseFloat(creditInput);
-    
+    const raw = creditInput.trim();
+    const val = raw === "" ? null : Math.min(5000, Math.max(0, parseInt(raw, 10)));
+
     updateCredit.mutate(
       { id: credential.id, data: { credit: val } },
       {
@@ -116,8 +117,6 @@ export function CredentialCard({ credential, onEdit }: CredentialCardProps) {
     switch (status) {
       case CredentialStatus.New:
         return "success";
-      case CredentialStatus.Bank:
-        return "default";
       case CredentialStatus.VPending:
         return "secondary";
       case CredentialStatus.USED:
@@ -126,6 +125,27 @@ export function CredentialCard({ credential, onEdit }: CredentialCardProps) {
         return "outline";
     }
   };
+
+  const creditPopoverForm = (
+    <form onSubmit={handleUpdateCredit} className="flex gap-2 items-end">
+      <div className="grid gap-2 flex-1">
+        <Label htmlFor="credit">Credit (max 5000)</Label>
+        <Input
+          id="credit"
+          type="number"
+          step="1"
+          min="0"
+          max="5000"
+          value={creditInput}
+          onChange={(e) => setCreditInput(e.target.value)}
+          className="h-9 font-mono"
+        />
+      </div>
+      <Button type="submit" size="sm" className="h-9 px-3">
+        Save
+      </Button>
+    </form>
+  );
 
   return (
     <>
@@ -158,9 +178,6 @@ export function CredentialCard({ credential, onEdit }: CredentialCardProps) {
                     <DropdownMenuItem onClick={() => handleUpdateStatus(CredentialStatus.New)}>
                       New
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleUpdateStatus(CredentialStatus.Bank)}>
-                      Bank
-                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => handleUpdateStatus(CredentialStatus.VPending)}>
                       VPending
                     </DropdownMenuItem>
@@ -174,32 +191,17 @@ export function CredentialCard({ credential, onEdit }: CredentialCardProps) {
                   <Popover open={isCreditPopoverOpen} onOpenChange={setIsCreditPopoverOpen}>
                     <PopoverTrigger asChild>
                       <button className="inline-flex items-center rounded-none border-2 border-black px-2 py-0.5 text-xs font-bold bg-white text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:bg-muted focus:outline-none transition-colors ml-auto active:translate-y-[1px] active:translate-x-[1px] active:shadow-none">
-                        ${credential.credit.toFixed(2)}
+                        {credential.credit}
                       </button>
                     </PopoverTrigger>
                     <PopoverContent className="w-60" align="end">
-                      <form onSubmit={handleUpdateCredit} className="flex gap-2 items-end">
-                        <div className="grid gap-2 flex-1">
-                          <Label htmlFor="credit">Update Credit</Label>
-                          <Input
-                            id="credit"
-                            type="number"
-                            step="0.01"
-                            value={creditInput}
-                            onChange={(e) => setCreditInput(e.target.value)}
-                            className="h-9 font-mono"
-                          />
-                        </div>
-                        <Button type="submit" size="sm" className="h-9 px-3">
-                          Save
-                        </Button>
-                      </form>
+                      {creditPopoverForm}
                     </PopoverContent>
                   </Popover>
                 )}
               </div>
             </div>
-            
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-8 w-8 -mr-2 -mt-2">
@@ -287,22 +289,7 @@ export function CredentialCard({ credential, onEdit }: CredentialCardProps) {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-60" side="top" align="center">
-                  <form onSubmit={handleUpdateCredit} className="flex gap-2 items-end">
-                    <div className="grid gap-2 flex-1">
-                      <Label htmlFor="credit">Add Credit</Label>
-                      <Input
-                        id="credit"
-                        type="number"
-                        step="0.01"
-                        value={creditInput}
-                        onChange={(e) => setCreditInput(e.target.value)}
-                        className="h-9 font-mono"
-                      />
-                    </div>
-                    <Button type="submit" size="sm" className="h-9 px-3">
-                      Save
-                    </Button>
-                  </form>
+                  {creditPopoverForm}
                 </PopoverContent>
               </Popover>
             </CardFooter>

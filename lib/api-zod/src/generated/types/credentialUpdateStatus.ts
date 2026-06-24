@@ -11,7 +11,6 @@ export type CredentialUpdateStatus = typeof CredentialUpdateStatus[keyof typeof 
 
 export const CredentialUpdateStatus = {
   New: 'New',
-  Bank: 'Bank',
   VPending: 'VPending',
   USED: 'USED',
 } as const;

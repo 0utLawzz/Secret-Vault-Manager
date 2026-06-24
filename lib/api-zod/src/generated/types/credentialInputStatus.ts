@@ -11,7 +11,6 @@ export type CredentialInputStatus = typeof CredentialInputStatus[keyof typeof Cr
 
 export const CredentialInputStatus = {
   New: 'New',
-  Bank: 'Bank',
   VPending: 'VPending',
   USED: 'USED',
 } as const;

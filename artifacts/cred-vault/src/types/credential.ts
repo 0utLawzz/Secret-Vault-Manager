@@ -1,8 +1,5 @@
-// Shared local types for Cred Vault
-
 export const CredentialStatus = {
   New: "New",
-  Bank: "Bank",
   VPending: "VPending",
   USED: "USED",
 } as const;

@@ -25,10 +25,15 @@ import { useEffect } from "react";
 const formSchema = z.object({
   email: z.string().min(1, "Email is required"),
   password: z.string().min(1, "Password is required"),
-  credit: z.coerce.number().nullable().optional(),
+  credit: z.coerce
+    .number()
+    .int("Must be a whole number")
+    .min(0, "Min 0")
+    .max(5000, "Max 5000")
+    .nullable()
+    .optional(),
   status: z.enum([
     CredentialStatus.New,
-    CredentialStatus.Bank,
     CredentialStatus.VPending,
     CredentialStatus.USED,
   ]),
@@ -59,7 +64,6 @@ export function CredentialForm({
     },
   });
 
-  // Reset form when initialData changes (e.g. editing a different record)
   useEffect(() => {
     if (initialData) {
       form.reset({
@@ -107,12 +111,14 @@ export function CredentialForm({
             name="credit"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Credit Amount</FormLabel>
+                <FormLabel>Credit <span className="text-muted-foreground font-normal">(max 5000)</span></FormLabel>
                 <FormControl>
                   <Input
                     type="number"
-                    step="0.01"
-                    placeholder="0.00"
+                    step="1"
+                    min="0"
+                    max="5000"
+                    placeholder="0"
                     {...field}
                     value={field.value ?? ""}
                   />
@@ -138,10 +144,7 @@ export function CredentialForm({
                   </FormControl>
                   <SelectContent>
                     <SelectItem value={CredentialStatus.New}>New</SelectItem>
-                    <SelectItem value={CredentialStatus.Bank}>Bank</SelectItem>
-                    <SelectItem value={CredentialStatus.VPending}>
-                      VPending
-                    </SelectItem>
+                    <SelectItem value={CredentialStatus.VPending}>VPending</SelectItem>
                     <SelectItem value={CredentialStatus.USED}>USED</SelectItem>
                   </SelectContent>
                 </Select>

@@ -21,15 +21,20 @@ export const HealthCheckResponse = zod.object({
  * @summary List all credential records
  */
 export const ListCredentialsQueryParams = zod.object({
-  "status": zod.enum(['New', 'Bank', 'VPending', 'USED']).optional()
+  "status": zod.enum(['New', 'VPending', 'USED']).optional()
 })
+
+export const listCredentialsResponseCreditMin = 0;
+export const listCredentialsResponseCreditMax = 5000;
+
+
 
 export const ListCredentialsResponseItem = zod.object({
   "id": zod.number(),
   "email": zod.string(),
   "password": zod.string(),
-  "credit": zod.number().nullable(),
-  "status": zod.enum(['New', 'Bank', 'VPending', 'USED']),
+  "credit": zod.number().min(listCredentialsResponseCreditMin).max(listCredentialsResponseCreditMax).nullable(),
+  "status": zod.enum(['New', 'VPending', 'USED']),
   "notes": zod.string().nullish(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
@@ -42,13 +47,16 @@ export const ListCredentialsResponse = zod.array(ListCredentialsResponseItem)
  */
 
 
+export const createCredentialBodyCreditMin = 0;
+export const createCredentialBodyCreditMax = 5000;
+
 
 
 export const CreateCredentialBody = zod.object({
   "email": zod.string().min(1),
   "password": zod.string().min(1),
-  "credit": zod.number().nullish(),
-  "status": zod.enum(['New', 'Bank', 'VPending', 'USED']),
+  "credit": zod.number().min(createCredentialBodyCreditMin).max(createCredentialBodyCreditMax).nullish(),
+  "status": zod.enum(['New', 'VPending', 'USED']),
   "notes": zod.string().nullish()
 })
 
@@ -60,12 +68,17 @@ export const GetCredentialParams = zod.object({
   "id": zod.coerce.number()
 })
 
+export const getCredentialResponseCreditMin = 0;
+export const getCredentialResponseCreditMax = 5000;
+
+
+
 export const GetCredentialResponse = zod.object({
   "id": zod.number(),
   "email": zod.string(),
   "password": zod.string(),
-  "credit": zod.number().nullable(),
-  "status": zod.enum(['New', 'Bank', 'VPending', 'USED']),
+  "credit": zod.number().min(getCredentialResponseCreditMin).max(getCredentialResponseCreditMax).nullable(),
+  "status": zod.enum(['New', 'VPending', 'USED']),
   "notes": zod.string().nullish(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
@@ -81,22 +94,30 @@ export const UpdateCredentialParams = zod.object({
 
 
 
+export const updateCredentialBodyCreditMin = 0;
+export const updateCredentialBodyCreditMax = 5000;
+
 
 
 export const UpdateCredentialBody = zod.object({
   "email": zod.string().min(1).optional(),
   "password": zod.string().min(1).optional(),
-  "credit": zod.number().nullish(),
-  "status": zod.enum(['New', 'Bank', 'VPending', 'USED']).optional(),
+  "credit": zod.number().min(updateCredentialBodyCreditMin).max(updateCredentialBodyCreditMax).nullish(),
+  "status": zod.enum(['New', 'VPending', 'USED']).optional(),
   "notes": zod.string().nullish()
 })
+
+export const updateCredentialResponseCreditMin = 0;
+export const updateCredentialResponseCreditMax = 5000;
+
+
 
 export const UpdateCredentialResponse = zod.object({
   "id": zod.number(),
   "email": zod.string(),
   "password": zod.string(),
-  "credit": zod.number().nullable(),
-  "status": zod.enum(['New', 'Bank', 'VPending', 'USED']),
+  "credit": zod.number().min(updateCredentialResponseCreditMin).max(updateCredentialResponseCreditMax).nullable(),
+  "status": zod.enum(['New', 'VPending', 'USED']),
   "notes": zod.string().nullish(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
@@ -112,22 +133,32 @@ export const DeleteCredentialParams = zod.object({
 
 
 /**
- * @summary Update credit amount for a credential
+ * @summary Update credit value for a credential
  */
 export const UpdateCreditParams = zod.object({
   "id": zod.coerce.number()
 })
 
+export const updateCreditBodyCreditMin = 0;
+export const updateCreditBodyCreditMax = 5000;
+
+
+
 export const UpdateCreditBody = zod.object({
-  "credit": zod.number().nullable()
+  "credit": zod.number().min(updateCreditBodyCreditMin).max(updateCreditBodyCreditMax).nullable()
 })
+
+export const updateCreditResponseCreditMin = 0;
+export const updateCreditResponseCreditMax = 5000;
+
+
 
 export const UpdateCreditResponse = zod.object({
   "id": zod.number(),
   "email": zod.string(),
   "password": zod.string(),
-  "credit": zod.number().nullable(),
-  "status": zod.enum(['New', 'Bank', 'VPending', 'USED']),
+  "credit": zod.number().min(updateCreditResponseCreditMin).max(updateCreditResponseCreditMax).nullable(),
+  "status": zod.enum(['New', 'VPending', 'USED']),
   "notes": zod.string().nullish(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
@@ -142,15 +173,20 @@ export const UpdateStatusParams = zod.object({
 })
 
 export const UpdateStatusBody = zod.object({
-  "status": zod.enum(['New', 'Bank', 'VPending', 'USED'])
+  "status": zod.enum(['New', 'VPending', 'USED'])
 })
+
+export const updateStatusResponseCreditMin = 0;
+export const updateStatusResponseCreditMax = 5000;
+
+
 
 export const UpdateStatusResponse = zod.object({
   "id": zod.number(),
   "email": zod.string(),
   "password": zod.string(),
-  "credit": zod.number().nullable(),
-  "status": zod.enum(['New', 'Bank', 'VPending', 'USED']),
+  "credit": zod.number().min(updateStatusResponseCreditMin).max(updateStatusResponseCreditMax).nullable(),
+  "status": zod.enum(['New', 'VPending', 'USED']),
   "notes": zod.string().nullish(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
@@ -164,7 +200,6 @@ export const GetCredentialStatsResponse = zod.object({
   "total": zod.number(),
   "byStatus": zod.object({
   "New": zod.number(),
-  "Bank": zod.number(),
   "VPending": zod.number(),
   "USED": zod.number()
 })

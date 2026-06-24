@@ -7,6 +7,10 @@
  */
 
 export interface CreditInput {
-  /** @nullable */
+  /**
+     * @minimum 0
+     * @maximum 5000
+     * @nullable
+     */
   credit: number | null;
 }

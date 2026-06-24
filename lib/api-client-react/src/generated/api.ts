@@ -504,7 +504,7 @@ export const getUpdateCreditUrl = (id: number,) => {
 }
 
 /**
- * @summary Update credit amount for a credential
+ * @summary Update credit value for a credential
  */
 export const updateCredit = async (id: number,
     creditInput: CreditInput, options?: RequestInit): Promise<Credential> => {
@@ -554,7 +554,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type UpdateCreditMutationError = ErrorType<ErrorResponse>
 
     /**
- * @summary Update credit amount for a credential
+ * @summary Update credit value for a credential
  */
 export const useUpdateCredit = <TError = ErrorType<ErrorResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCredit>>, TError,{id: number;data: BodyType<CreditInput>}, TContext>, request?: SecondParameter<typeof customFetch>}

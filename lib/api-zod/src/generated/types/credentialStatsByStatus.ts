@@ -8,7 +8,6 @@
 
 export type CredentialStatsByStatus = {
   New: number;
-  Bank: number;
   VPending: number;
   USED: number;
 };

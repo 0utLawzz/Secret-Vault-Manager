@@ -11,7 +11,11 @@ export interface Credential {
   id: number;
   email: string;
   password: string;
-  /** @nullable */
+  /**
+     * @minimum 0
+     * @maximum 5000
+     * @nullable
+     */
   credit: number | null;
   status: CredentialStatus;
   /** @nullable */

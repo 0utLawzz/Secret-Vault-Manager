@@ -11,7 +11,6 @@ export type ListCredentialsStatus = typeof ListCredentialsStatus[keyof typeof Li
 
 export const ListCredentialsStatus = {
   New: 'New',
-  Bank: 'Bank',
   VPending: 'VPending',
   USED: 'USED',
 } as const;

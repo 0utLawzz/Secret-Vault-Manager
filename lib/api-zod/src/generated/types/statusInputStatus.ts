@@ -11,7 +11,6 @@ export type StatusInputStatus = typeof StatusInputStatus[keyof typeof StatusInpu
 
 export const StatusInputStatus = {
   New: 'New',
-  Bank: 'Bank',
   VPending: 'VPending',
   USED: 'USED',
 } as const;

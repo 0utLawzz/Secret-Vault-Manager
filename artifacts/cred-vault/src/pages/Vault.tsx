@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Plus, Database, DollarSign, RefreshCw, XCircle, LayoutGrid } from "lucide-react";
+import { Plus, Database } from "lucide-react";
 import { CredentialCard } from "@/components/CredentialCard";
 import { CredentialForm } from "@/components/CredentialForm";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -23,6 +23,7 @@ import {
 import { CredentialStatus, type Credential } from "@/types/credential";
 import { useToast } from "@/hooks/use-toast";
 import { AnimatePresence } from "framer-motion";
+import { LayoutGrid } from "lucide-react";
 
 type FilterTab = "All" | CredentialStatus;
 
@@ -30,7 +31,7 @@ export default function Vault() {
   const [activeTab, setActiveTab] = useState<FilterTab>("All");
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<Credential | null>(null);
-  
+
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -111,10 +112,6 @@ export default function Vault() {
                 <span className="bg-accent text-white px-2 py-0.5 border-2 border-black">{stats?.byStatus.New || 0}</span>
               </div>
               <div className="flex items-center gap-2 hidden md:flex">
-                <span className="text-muted-foreground uppercase text-xs">Bank</span>
-                <span className="bg-primary text-white px-2 py-0.5 border-2 border-black">{stats?.byStatus.Bank || 0}</span>
-              </div>
-              <div className="flex items-center gap-2 hidden lg:flex">
                 <span className="text-muted-foreground uppercase text-xs">VPend</span>
                 <span className="bg-secondary text-black px-2 py-0.5 border-2 border-black">{stats?.byStatus.VPending || 0}</span>
               </div>
@@ -131,7 +128,7 @@ export default function Vault() {
               <Plus className="mr-2 h-5 w-5" strokeWidth={3} />
               Add Record
             </Button>
-            
+
             <Button
               size="icon"
               className="bg-accent text-white hover:bg-accent/90 ml-2 sm:hidden"
@@ -147,32 +144,26 @@ export default function Vault() {
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as FilterTab)} className="w-full">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
             <TabsList className="w-full sm:w-auto flex flex-wrap gap-2 bg-transparent border-none shadow-none p-0">
-              <TabsTrigger 
-                value="All" 
+              <TabsTrigger
+                value="All"
                 className="flex-1 sm:flex-none border-3 border-black shadow-neo-sm data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:translate-y-[2px] data-[state=active]:translate-x-[2px]"
               >
                 <LayoutGrid className="h-4 w-4 mr-2" />
                 All
               </TabsTrigger>
-              <TabsTrigger 
+              <TabsTrigger
                 value={CredentialStatus.New}
                 className="flex-1 sm:flex-none border-3 border-black shadow-neo-sm data-[state=active]:bg-accent data-[state=active]:text-black data-[state=active]:shadow-none data-[state=active]:translate-y-[2px] data-[state=active]:translate-x-[2px]"
               >
                 New
               </TabsTrigger>
-              <TabsTrigger 
-                value={CredentialStatus.Bank}
-                className="flex-1 sm:flex-none border-3 border-black shadow-neo-sm data-[state=active]:bg-[#000] data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:translate-y-[2px] data-[state=active]:translate-x-[2px]"
-              >
-                Bank
-              </TabsTrigger>
-              <TabsTrigger 
+              <TabsTrigger
                 value={CredentialStatus.VPending}
                 className="flex-1 sm:flex-none border-3 border-black shadow-neo-sm data-[state=active]:bg-secondary data-[state=active]:text-black data-[state=active]:shadow-none data-[state=active]:translate-y-[2px] data-[state=active]:translate-x-[2px]"
               >
                 VPending
               </TabsTrigger>
-              <TabsTrigger 
+              <TabsTrigger
                 value={CredentialStatus.USED}
                 className="flex-1 sm:flex-none border-3 border-black shadow-neo-sm data-[state=active]:bg-destructive data-[state=active]:text-black data-[state=active]:shadow-none data-[state=active]:translate-y-[2px] data-[state=active]:translate-x-[2px]"
               >
@@ -193,8 +184,8 @@ export default function Vault() {
                 <Database className="h-12 w-12 text-muted-foreground mb-4 opacity-20" />
                 <h3 className="text-xl font-bold uppercase mb-2">No records found</h3>
                 <p className="text-muted-foreground font-mono max-w-sm">
-                  {activeTab === "All" 
-                    ? "Your vault is empty. Add a new credential record to get started." 
+                  {activeTab === "All"
+                    ? "Your vault is empty. Add a new credential record to get started."
                     : `No credentials found with status: ${activeTab}.`}
                 </p>
                 {activeTab !== "All" && (
