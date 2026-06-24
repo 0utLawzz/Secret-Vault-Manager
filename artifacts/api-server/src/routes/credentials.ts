@@ -8,6 +8,12 @@ import {
   UpdateStatusBody,
   ListCredentialsQueryParams,
 } from "@workspace/api-zod";
+import { z } from "zod";
+
+// Additional integer refinements for credit fields not enforced by generated zod
+const creditIsInteger = (v: number | null | undefined) =>
+  v == null || Number.isInteger(v);
+const creditErrMsg = "Credit must be a whole number";
 
 const router = Router();
 
@@ -46,6 +52,10 @@ router.post("/credentials", async (req, res) => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
+  if (!creditIsInteger(parsed.data.credit)) {
+    res.status(400).json({ error: creditErrMsg });
+    return;
+  }
   try {
     const [row] = await db
       .insert(credentialsTable)
@@ -72,7 +82,7 @@ router.get("/credentials/stats", async (req, res) => {
       .from(credentialsTable)
       .groupBy(credentialsTable.status);
 
-    const byStatus = { New: 0, Bank: 0, VPending: 0, USED: 0 } as Record<string, number>;
+    const byStatus = { New: 0, VPending: 0, USED: 0 } as Record<string, number>;
     let total = 0;
     for (const r of rows) {
       byStatus[r.status] = r.count;
@@ -105,6 +115,7 @@ router.patch("/credentials/:id", async (req, res) => {
   if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
   const parsed = UpdateCredentialBody.safeParse(req.body);
   if (!parsed.success) { res.status(400).json({ error: parsed.error.message }); return; }
+  if (!creditIsInteger(parsed.data.credit)) { res.status(400).json({ error: creditErrMsg }); return; }
   try {
     const updateData: Record<string, unknown> = { updatedAt: new Date() };
     if (parsed.data.email !== undefined) updateData.email = parsed.data.email;
@@ -146,6 +157,7 @@ router.patch("/credentials/:id/credit", async (req, res) => {
   if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
   const parsed = UpdateCreditBody.safeParse(req.body);
   if (!parsed.success) { res.status(400).json({ error: parsed.error.message }); return; }
+  if (!creditIsInteger(parsed.data.credit)) { res.status(400).json({ error: creditErrMsg }); return; }
   try {
     const [row] = await db
       .update(credentialsTable)
