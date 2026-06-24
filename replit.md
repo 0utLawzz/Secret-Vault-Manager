@@ -1,6 +1,6 @@
-# [Project name]
+# Cred Vault
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A personal credential and credit record manager — store emails, passwords, credit amounts, and track statuses (New / Bank / VPending / USED). NeoBrutalism design.
 
 ## Run & Operate
 
@@ -22,23 +22,42 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `lib/db/src/schema/credentials.ts` — DB schema (credentialsTable with status enum)
+- `lib/api-spec/openapi.yaml` — API contract (source of truth)
+- `artifacts/api-server/src/routes/credentials.ts` — CRUD + credit/status endpoints
+- `artifacts/api-server/src/routes/auth.ts` — Login / logout / me endpoints
+- `artifacts/api-server/src/middlewares/auth.ts` — requireAuth middleware
+- `artifacts/cred-vault/src/pages/Vault.tsx` — Main vault page
+- `artifacts/cred-vault/src/pages/Login.tsx` — Password gate page
+- `artifacts/cred-vault/src/types/credential.ts` — Shared frontend types
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Password protection via `VAULT_PASSWORD` env var + express-session. If not set, vault is open (dev mode).
+- Status options: New | Bank | VPending | USED. USED cards are faded + italic.
+- Credit is a separate nullable float field with a dedicated PATCH endpoint.
+- NeoBrutalism design: thick black borders, offset shadows, bold typography.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Add/edit/delete credential records (email, password, credit, status, notes)
+- Quick status change via clickable badge on each card
+- Inline credit add/edit via popover
+- USED records appear faded and italic ("spent")
+- Filter tabs: All / New / Bank / VPending / USED
+- Stats bar showing counts by status
+- Password masking with reveal toggle
+- Copy email/password to clipboard
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+_Populate as needed._
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Set `VAULT_PASSWORD` secret before deploying to protect the vault publicly.
+- Run `pnpm --filter @workspace/api-spec run codegen` after any OpenAPI spec change.
+- `requireAuth` middleware bypasses auth when `VAULT_PASSWORD` is not set.
 
 ## Pointers
 

@@ -3,13 +3,15 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Cred Vault API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: credentials
+    description: Credential record operations
 paths:
   /healthz:
     get:
@@ -24,6 +26,200 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /credentials:
+    get:
+      operationId: listCredentials
+      tags: [credentials]
+      summary: List all credential records
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [New, Bank, VPending, USED]
+      responses:
+        "200":
+          description: List of credentials
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Credential"
+    post:
+      operationId: createCredential
+      tags: [credentials]
+      summary: Create a new credential record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CredentialInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Credential"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /credentials/{id}:
+    get:
+      operationId: getCredential
+      tags: [credentials]
+      summary: Get a single credential record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Credential record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Credential"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateCredential
+      tags: [credentials]
+      summary: Update a credential record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CredentialUpdate"
+      responses:
+        "200":
+          description: Updated credential
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Credential"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteCredential
+      tags: [credentials]
+      summary: Delete a credential record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /credentials/{id}/credit:
+    patch:
+      operationId: updateCredit
+      tags: [credentials]
+      summary: Update credit amount for a credential
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreditInput"
+      responses:
+        "200":
+          description: Updated credential with new credit
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Credential"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /credentials/{id}/status:
+    patch:
+      operationId: updateStatus
+      tags: [credentials]
+      summary: Update status for a credential
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StatusInput"
+      responses:
+        "200":
+          description: Updated credential with new status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Credential"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /credentials/stats:
+    get:
+      operationId: getCredentialStats
+      tags: [credentials]
+      summary: Get summary stats (counts by status)
+      responses:
+        "200":
+          description: Stats summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CredentialStats"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +230,102 @@ components:
       required:
         - status
 
+    Credential:
+      type: object
+      required: [id, email, password, credit, status, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        password:
+          type: string
+        credit:
+          type: ["number", "null"]
+        status:
+          type: string
+          enum: [New, Bank, VPending, USED]
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CredentialInput:
+      type: object
+      required: [email, password, status]
+      properties:
+        email:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+        credit:
+          type: ["number", "null"]
+        status:
+          type: string
+          enum: [New, Bank, VPending, USED]
+        notes:
+          type: ["string", "null"]
+
+    CredentialUpdate:
+      type: object
+      properties:
+        email:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+        credit:
+          type: ["number", "null"]
+        status:
+          type: string
+          enum: [New, Bank, VPending, USED]
+        notes:
+          type: ["string", "null"]
+
+    CreditInput:
+      type: object
+      required: [credit]
+      properties:
+        credit:
+          type: ["number", "null"]
+
+    StatusInput:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [New, Bank, VPending, USED]
+
+    CredentialStats:
+      type: object
+      required: [total, byStatus]
+      properties:
+        total:
+          type: integer
+        byStatus:
+          type: object
+          properties:
+            New:
+              type: integer
+            Bank:
+              type: integer
+            VPending:
+              type: integer
+            USED:
+              type: integer
+          required: [New, Bank, VPending, USED]
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
